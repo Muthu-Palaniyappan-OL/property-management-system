@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="property-card-group">
+    {% for property in properties_list %}
+
+    <div class="card bg-dark m-2">
+        <img class=" card-img-top" src="{{property[1]}}" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title text-white">{{property[0]}}</h5>
+            <p class="card-text text-white">Property in prime location</p>
+            <a href="/property/{{property[0]}}" class="btn btn-primary">Explore &gt; </a>
+        </div>
+    </div>
+
+    {% endfor %}
+
+    <div class="card new-property m-2">
+        <a href="/newproperty">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                <path
+                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+            </svg>
+            <span class="mt-1 mb-5">
+                Add New Property
+            </span>
+        </a>
+    </div>
+</div>
+{% endblock main %}
