@@ -4,6 +4,8 @@ from sqlalchemy.orm import mapped_column, Mapped, DeclarativeBase, Session, scop
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+categories = ["bunglow", "society", "under-construction",
+              "induvijual-house", "appartment/flats", "office-complex"]
 
 
 class User(db.Model):
@@ -22,6 +24,11 @@ class Property(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     property_name: Mapped[str] = mapped_column(unique=True, nullable=False)
     url: Mapped[str] = mapped_column(nullable=False)
+    category: Mapped[str] = mapped_column(nullable=True)
+    location: Mapped[str] = mapped_column(nullable=True)
+    no_of_units: Mapped[int] = mapped_column(nullable=True)
+    list_of_units: Mapped[str] = mapped_column(nullable=True)
+    address: Mapped[str] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
         return f"property(id={self.id},property_name={self.property_name},url={self.url})"
@@ -31,7 +38,7 @@ def initalize() -> None:
     db.session.add(User(username='admin', password='admin', level=1))
     db.session.add(User(username='muthu', password='muthu', level=2))
     db.session.add(Property(property_name='Flat1',
-                            url='https://assets-news.housing.com/news/wp-content/uploads/2022/03/28143140/Difference-between-flat-and-apartment.jpg'))
+                            url='https://assets-news.housing.com/news/wp-content/uploads/2022/03/28143140/Difference-between-flat-and-apartment.jpg', location='Chennai', no_of_units=5, list_of_units='10-20', address='No.19khjdfhj'))
     db.session.commit()
 
 
@@ -55,6 +62,23 @@ def update_or_add_users(username, password, level):
         results[0].password = password
     else:
         db.session.add(User(username=username, password=password, level=level))
+    db.session.commit()
+
+
+def update_or_add_properties(property_name, url, category, location, no_of_units, list_of_units, address):
+    results = db.session.query(Property).filter(
+        Property.property_name == property_name)
+    if results.first() is not None:
+        results[0].property_name = property_name
+        results[0].url = url
+        results[0].category = category
+        results[0].location = location
+        results[0].no_of_units = no_of_units
+        results[0].list_of_units = list_of_units
+        results[0].address = address
+    else:
+        db.session.add(Property(property_name=property_name, url=url, category=category, location=location,
+                       no_of_units=no_of_units, list_of_units=list_of_units, address=address))
     db.session.commit()
 
 

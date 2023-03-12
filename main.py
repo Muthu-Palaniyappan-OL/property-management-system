@@ -49,10 +49,20 @@ def deleteuser(*args, **kwargs):
     return "OK"
 
 
-@app.route("/newproperty", endpoint='newproperty')
+@app.route("/editproperty/<property_name>", methods=['GET', 'POST'], endpoint='editproperty')
 @restricted
-def newproperty(*args, **kwargs):
-    return render_template("newproperty.html", title='Manage Users')
+def editproperty(property_name, *args, **kwargs):
+
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save('./static/'+f.filename)
+        app.logger.info(f.filename)
+        db.update_or_add_properties(request.form['property_name'], '/static/'+f.filename, request.form['category'], request.form['location'],
+                                    request.form['no_of_units'], request.form['list_of_units'], request.form['address'])
+        return redirect("/")
+    if property_name != "new":
+        return render_template("editproperty.html", property=db.get_property_details(property_name), categories=db.categories, title='Edit Property')
+    return render_template("editproperty.html", property=None, categories=db.categories,  title='Edit Property')
 
 
 @app.route("/logout", endpoint='logout')
@@ -73,7 +83,7 @@ def login(*args, **kwargs):
                 "authorization", generate_jwt({'username': user.username, 'level': user.level}))
             return response
         else:
-            return render_template("login.html", title='Login', remove_logout_icon=True)
+            return render_template("login.html", title='Login', remove_logout_icon=True, warning='Wrong Username or password')
     return render_template("login.html", title='Login', remove_logout_icon=True)
 
 

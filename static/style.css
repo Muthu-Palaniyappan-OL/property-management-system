@@ -1,3 +1,12 @@
+/* COMMON */
+
+body {
+    background-color: rgb(183, 183, 183);
+}
+
+/* COMMON END */
+
+
 /* CENTER */
 
 .alert-center {
@@ -148,3 +157,33 @@ div.new-property>a {
 }
 
 /* PROPERTY END */
+/* PROPERTY_EDIT END */
+.property_edit_main {
+    width: 100%;
+}
+
+.property_edit_main>div {
+    max-width: none;
+}
+
+.property_edit_main>div>form {
+    display: grid;
+    max-width: none;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+}
+
+/* PROPERTY_EDIT END */
+/* PROPERTY_VIEW */
+
+.card-img-top {
+    height: 30vh;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.tab-pane {
+    margin: 1rem;
+}
+
+/* PROPERTY_VIEW END */

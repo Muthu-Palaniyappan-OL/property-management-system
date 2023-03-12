@@ -15,7 +15,11 @@
                     placeholder="Password">
                 <label for="floatingPassword">Password</label>
             </div>
-
+            {% if warning %}
+            <div class="alert alert-danger" role="alert">
+                {{ warning }}
+            </div>
+            {% endif %}
             <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
         </form>
     </div>

@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="form-main property_edit_main">
+    <div class="form-signin">
+        <form action="" enctype="multipart/form-data" class="container" method="post">
+            <h1 class="h3 mb-3 text-center">Add or Modify Property</h1>
+
+            <div class="form-floating">
+                <input type="text" class="form-control" id="property_name" name="property_name"
+                    placeholder="PropertyName" value="{{property.property_name or ''}}">
+                <label for="property_name">Property Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="location" name="location" placeholder="Location"
+                    value="{{property.location or ''}}">
+                <label for="location">Location</label>
+            </div>
+            <div class="form-floating">
+                <input type="number" class="form-control" id="no_of_units" name="no_of_units" placeholder="No Of Units"
+                    value="{{property.no_of_units or ''}}">
+                <label for="no_of_units">No Of Units</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="list_of_units" name="list_of_units"
+                    placeholder="List Of Units" value="{{property.list_of_units or ''}}">
+                <label for="list_of_units">List Of Units</label>
+            </div>
+
+            <select class="form-floating" name="category" id="category">
+                {% for category in categories %}
+                {% if property.category == category %}
+                <option selected value="{{category}}">{{category}}</option>
+                {% else %}
+                <option value="{{category}}">{{category}}</option>
+                {% endif %}
+                {% endfor%}
+            </select>
+
+            <div class="form-floating">
+                <textarea class="form-control" name="address" id="address" cols="30"
+                    placeholder="{{property.address or ''}}" rows="10"></textarea>
+                <label for="address">Address</label>
+            </div>
+
+            <div class="mb-3">
+                <input type="file" class="form-control" id="file" name="file" placeholder="File Name">
+            </div>
+
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Add or Modify Property</button>
+        </form>
+    </div>
+</div>
+{% endblock main %}

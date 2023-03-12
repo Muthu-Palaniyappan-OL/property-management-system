@@ -7,15 +7,29 @@
         <img class=" card-img-top" src="{{property.url}}" alt="Card image cap">
         <div class="card-body">
             <h5 class="card-title text-white">{{property.property_name}}</h5>
-            <p class="card-text text-white">Property in prime location</p>
-            <a href="/property/{{property.property_name}}" class="btn btn-primary">Explore &gt; </a>
+            <p class="card-text text-white">{{property.location}} {{property.category or ''}}</p>
+            <a href="/property/{{property.property_name}}"
+                class="btn btn-primary d-inline-flex gap-2 align-items-center"><svg xmlns="http://www.w3.org/2000/svg"
+                    width="16" height="16" fill="currentColor" class="bi bi-compass" viewBox="0 0 16 16">
+                    <path
+                        d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016zm6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />
+                    <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z" />
+                </svg>Explore </a>
+            <a href="/editproperty/{{property.property_name}}"
+                class="btn btn-danger d-inline-flex gap-2 align-items-center"><svg xmlns="http://www.w3.org/2000/svg"
+                    width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path
+                        d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                    <path fill-rule="evenodd"
+                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                </svg>Edit </a>
         </div>
     </div>
 
     {% endfor %}
 
     <div class="card new-property m-2">
-        <a href="/newproperty">
+        <a href="/editproperty/new">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                 <path
                     d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />

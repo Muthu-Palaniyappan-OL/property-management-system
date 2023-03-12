@@ -3,11 +3,48 @@
 
 <div class="card m-3">
     <img src="{{ property.url }}" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">{{ property.property_name }}</h5>
-        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-            content. This content is a little bit longer.</p>
-        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+    <div class="card-body bg-secondary" style="--bs-bg-opacity: .2;">
+        <h1 class="card-title">{{ property.property_name }}</h1>
+        <ul class="nav nav-pills" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab"
+                    data-bs-target="#overview-tab-pane" type="button" role="tab" aria-controls="overview-tab-pane"
+                    aria-selected="true">Overview</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="finance-tab" data-bs-toggle="tab" data-bs-target="#finance-tab-pane"
+                    type="button" role="tab" aria-controls="finance-tab-pane" aria-selected="false">Finance</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="vendors-tab" data-bs-toggle="tab" data-bs-target="#vendors-tab-pane"
+                    type="button" role="tab" aria-controls="vendors-tab-pane" aria-selected="false">Vendors</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tenants-tab" data-bs-toggle="tab" data-bs-target="#tenants-tab-pane"
+                    type="button" role="tab" aria-controls="tenants-tab-pane" aria-selected="false">Tenants</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="overview-tab-pane" role="tabpanel" aria-labelledby="overview-tab"
+                tabindex="0">
+                <div id="overview-contents" class="d-flex gap-2 flex-wrap m-3">
+                    <p class="alert alert-primary" role="alert">Category: {{ property.property_name }}</p>
+                    <p class="alert alert-primary" role="alert">Location: {{ property.location }}</p>
+                    <p class="alert alert-primary" role="alert">No of units: {{ property.no_of_units }}</p>
+                    <p class="alert alert-primary" role="alert">List Of Units: {{ property.list_of_units }}</p>
+                    <p class="alert alert-primary" role="alert">Address: {{ property.address }}</p>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="finance-tab-pane" role="tabpanel" aria-labelledby="finance-tab" tabindex="1">
+                <h3>Finance</h3>
+            </div>
+            <div class="tab-pane fade" id="vendors-tab-pane" role="tabpanel" aria-labelledby="vendors-tab" tabindex="2">
+                <h3>Vendors</h3>
+            </div>
+            <div class="tab-pane fade" id="tenants-tab-pane" role="tabpanel" aria-labelledby="tenants-tab" tabindex="3">
+                <h3>Tenants</h3>
+            </div>
+        </div>
     </div>
 </div>
 
