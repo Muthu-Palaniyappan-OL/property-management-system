@@ -4,11 +4,11 @@
     {% for property in properties_list %}
 
     <div class="card bg-dark m-2">
-        <img class=" card-img-top" src="{{property[1]}}" alt="Card image cap">
+        <img class=" card-img-top" src="{{property.url}}" alt="Card image cap">
         <div class="card-body">
-            <h5 class="card-title text-white">{{property[0]}}</h5>
+            <h5 class="card-title text-white">{{property.property_name}}</h5>
             <p class="card-text text-white">Property in prime location</p>
-            <a href="/property/{{property[0]}}" class="btn btn-primary">Explore &gt; </a>
+            <a href="/property/{{property.property_name}}" class="btn btn-primary">Explore &gt; </a>
         </div>
     </div>
 

@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, make_response
 from jwt import generate_jwt, validate_jwt, get_user_info
-from db import initalize, validate_username_password, get_properties_list, get_users_list, update_or_add_users, delete_user, get_property_details
+import db
 
 app = Flask(__name__)
-initalize()
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+db.db.init_app(app)
 
 
 def restricted(func):
@@ -21,33 +22,30 @@ def restricted(func):
 @app.route("/", endpoint='dashboard')
 @restricted
 def dashboard(*args, **kwargs):
-    return render_template("dashboard.html", properties_list=get_properties_list(), title='Dashboard')
+    return render_template("dashboard.html", properties_list=db.get_properties_list(), title='Dashboard')
 
 
 @app.route("/property/<property_name>", endpoint='property')
 @restricted
 def property(property_name, *args, **kwargs):
-    return render_template("property.html", property=get_property_details(property_name), title=property_name)
+    return render_template("property.html", property=db.get_property_details(property_name), title=property_name)
 
 
 @app.route("/manageusers", methods=['GET', 'POST'], endpoint='manageusers')
 @restricted
 def property(*args, **kwargs):
     if request.method == "POST":
-        update_or_add_users(
-            request.form['new-username'], request.form['new-password'])
-        return render_template("manageusers.html", users_list=get_users_list(), admin=(kwargs['username'] == 'admin'), title='Manage Users')
-    return render_template("manageusers.html", users_list=get_users_list(), admin=(kwargs['username'] == 'admin'), title='Manage Users')
+        db.update_or_add_users(
+            request.form['new-username'], request.form['new-password'], request.form['level'])
+        return render_template("manageusers.html", users_list=db.get_users_list(), level=kwargs['level'], title='Manage Users')
+    return render_template("manageusers.html", users_list=db.get_users_list(), level=kwargs['level'], title='Manage Users')
 
 
 @app.route("/deleteuser", methods=['GET', 'POST'], endpoint='deleteuser')
 @restricted
 def deleteuser(*args, **kwargs):
     if request.method == 'POST':
-        print(request.json['username'])
-        delete_user(request.json['username'])
-        for i, main in enumerate(get_users_list()):
-            print(i, main[0])
+        db.delete_user(request.json['username'])
     return "OK"
 
 
@@ -68,10 +66,11 @@ def logout(*args, **kwargs):
 @app.route("/login", methods=["POST", "GET"], endpoint='login')
 def login(*args, **kwargs):
     if request.method == "POST":
-        if validate_username_password(request.form['username'], request.form['password']):
+        if db.validate_username_password(request.form['username'], request.form['password']):
             response = make_response(redirect("/"))
+            user = db.get_users_details(request.form['username'])
             response.set_cookie(
-                "authorization", generate_jwt({'username': request.form['username']}))
+                "authorization", generate_jwt({'username': user.username, 'level': user.level}))
             return response
         else:
             return render_template("login.html", title='Login', remove_logout_icon=True)
@@ -79,4 +78,7 @@ def login(*args, **kwargs):
 
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.db.create_all()
+        db.initalize()
     app.run(debug=True)

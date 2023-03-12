@@ -1,103 +1,84 @@
-import sqlite3
+from sqlalchemy.orm import DeclarativeBase, Session
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import mapped_column, Mapped, DeclarativeBase, Session, scoped_session, sessionmaker
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
-def get_db_connection():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row
-    return conn
+class User(db.Model):
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
+    level: Mapped[int] = mapped_column(nullable=False)  # 1 (ADMIN), 2 (READ)
+
+    def __repr__(self) -> str:
+        return f"user(id={self.id},username={self.username},password={self.password})"
+
+
+class Property(db.Model):
+    __tablename__ = "properties"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    property_name: Mapped[str] = mapped_column(unique=True, nullable=False)
+    url: Mapped[str] = mapped_column(nullable=False)
+
+    def __repr__(self) -> str:
+        return f"property(id={self.id},property_name={self.property_name},url={self.url})"
 
 
 def initalize() -> None:
-    con = get_db_connection()
-    c = con.cursor()
-
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS users (
-        username TEXT PRIMARYKEY UNIQUE NOT NULL,
-        password TEXT NOT NULL
-    );
-    """)
-
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS properties (
-        property_name TEXT PRIMARYKEY UNIQUE NOT NULL,
-        url TEXT NOT NULL
-    );
-    """)
-
-    c.execute(
-        "INSERT OR REPLACE INTO users(username, password) VALUES('admin', 'admin')")
-
-    c.execute(
-        "INSERT OR REPLACE INTO users(username, password) VALUES('muthu', 'muthu')")
-
-    c.execute(
-        "INSERT OR REPLACE INTO properties (property_name, url) VALUES('FLAT1', 'https://cdn.confident-group.com/wp-content/uploads/2021/08/26224309/oakwood_gallery_image.jpg')")
-
-    c.close()
-    con.commit()
+    db.session.add(User(username='admin', password='admin', level=1))
+    db.session.add(User(username='muthu', password='muthu', level=2))
+    db.session.add(Property(property_name='Flat1',
+                            url='https://assets-news.housing.com/news/wp-content/uploads/2022/03/28143140/Difference-between-flat-and-apartment.jpg'))
+    db.session.commit()
 
 
 def validate_username_password(username, password):
-    con = get_db_connection()
-    c = con.cursor()
-    c.execute(
-        f"SELECT username, password from users WHERE username = \'{username}\' LIMIT 1")
-    result = c.fetchall()
-    if len(result) != 1:
+    results = db.session.query(User).filter(User.username == username)
+    if results.count() != 1:
         return False
-    c.close()
-    if password == result[0][1]:
+    if results[0].password == password:
         return True
     else:
         return False
 
 
-def update_or_add_users(username, password):
-    con = get_db_connection()
-    c = con.cursor()
-    c.execute(
-        f"INSERT OR REPLACE into users (username, password) VALUES(\'{username}\', \'{password}\')")
-    c.close()
-    con.commit()
+def get_property_details(property_name):
+    return list(db.session.query(Property).filter(Property.property_name == property_name))[0]
+
+
+def update_or_add_users(username, password, level):
+    results = db.session.query(User).filter(User.username == username)
+    if results.first() is not None:
+        results[0].password = password
+    else:
+        db.session.add(User(username=username, password=password, level=level))
+    db.session.commit()
 
 
 def get_properties_list():
-    con = get_db_connection()
-    c = con.cursor()
-
-    c.execute("SELECT property_name, url FROM properties")
-    result = c.fetchall()
-    c.close()
-    return result
+    return list(db.session.query(Property).all())
 
 
 def get_users_list():
-    con = get_db_connection()
-    c = con.cursor()
+    return list(db.session.query(User).all())
 
-    c.execute("SELECT username FROM users")
-    result = c.fetchall()
-    c.close()
-    return result
+
+def get_users_details(username):
+    return db.session.query(User).filter(User.username == username)[0]
 
 
 def delete_user(username):
-    con = get_db_connection()
-    c = con.cursor()
-
-    c.execute(
-        f"DELETE FROM users WHERE username = \'{username}\'")
-    c.close()
-    con.commit()
+    results = db.session.query(User).filter(User.username == username)
+    if results.first() is not None:
+        db.session.delete(results[0])
+        db.session.commit()
 
 
-def get_property_details(property):
-    con = get_db_connection()
-    c = con.cursor()
-
-    c.execute(
-        f"SELECT property_name, url FROM properties WHERE property_name = \'{property}\'")
-    result = c.fetchall()
-    c.close()
-    return result
+if __name__ == "__main__":
+    initalize()
+    print(get_users_list())
+    update_or_add_users("admin", "yahoo")
+    print(get_users_list())
