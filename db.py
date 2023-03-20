@@ -3,6 +3,8 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.orm import mapped_column, Mapped, DeclarativeBase, Session, scoped_session, sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 
+#hi 
+
 db = SQLAlchemy()
 categories = ["bunglow", "society", "under-construction",
               "induvijual-house", "appartment/flats", "office-complex"]
