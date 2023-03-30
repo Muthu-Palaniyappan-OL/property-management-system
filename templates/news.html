@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block main %}
+{% for i in news %}
+    <a href="{{i['url']}}" class="text-decoration-none">
+        <div class="card m-4">
+            <div class="card-body">
+                <h3 class="text-body">{{i['title']}}</h3>
+                <p class="text-muted">{{i['description']}}</p>
+            </div>
+        </div>
+    </a>
+{% endfor %}
+</ul>
+</div>
+
+
+{% endblock main %}

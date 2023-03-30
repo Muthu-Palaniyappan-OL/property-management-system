@@ -34,6 +34,27 @@ class Property(db.Model):
         return f"property(id={self.id},property_name={self.property_name},url={self.url})"
 
 
+class Vendor(db.Model):
+    __tablename__ = "vendors"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(unique=True, nullable=False)
+    address: Mapped[str] = mapped_column(nullable=True)
+    email: Mapped[str] = mapped_column(nullable=True)
+    website: Mapped[str] = mapped_column(nullable=True)
+    name_contact_person: Mapped[str] = mapped_column(nullable=True)
+    phone_number_of_contact: Mapped[str] = mapped_column(nullable=True)
+    vendor_type: Mapped[str] = mapped_column(nullable=True)
+    name_of_director: Mapped[str] = mapped_column(nullable=True)
+    pan_no: Mapped[str] = mapped_column(nullable=True)
+    gst: Mapped[str] = mapped_column(nullable=True)
+    msme_or_not: Mapped[str] = mapped_column(nullable=True)
+    bank_account_name: Mapped[str] = mapped_column(nullable=True)
+    bank_account_number: Mapped[str] = mapped_column(nullable=True)
+
+    def __repr__(self) -> str:
+        return f"property(id={self.id},property_name={self.property_name},url={self.url})"
+
+
 def initalize() -> None:
     db.session.add(User(username='admin', password='admin', level=1))
     db.session.add(User(username='muthu', password='muthu', level=2))
@@ -65,20 +86,37 @@ def update_or_add_users(username, password, level):
     db.session.commit()
 
 
-def update_or_add_properties(property_name, url, category, location, no_of_units, list_of_units, address):
+def update_or_add_properties(form_data: dict, url: str):
     results = db.session.query(Property).filter(
-        Property.property_name == property_name)
+        Property.property_name == form_data['property_name'])
+
+    user = None
     if results.first() is not None:
-        results[0].property_name = property_name
-        results[0].url = url
-        results[0].category = category
-        results[0].location = location
-        results[0].no_of_units = no_of_units
-        results[0].list_of_units = list_of_units
-        results[0].address = address
+        user = results[0]
     else:
-        db.session.add(Property(property_name=property_name, url=url, category=category, location=location,
-                       no_of_units=no_of_units, list_of_units=list_of_units, address=address))
+        user = User()
+
+    for key in form_data:
+        setattr(user, key, form_data[key])
+
+    setattr(user, "url", url)
+
+    db.session.commit()
+
+
+def update_or_add_vendors(form_data: dict):
+    results = db.session.query(Property).filter(
+        Property.property_name == form_data['vendor_name'])
+
+    user = None
+    if results.first() is not None:
+        user = results[0]
+    else:
+        user = User()
+
+    for key in form_data:
+        setattr(user, key, form_data[key])
+
     db.session.commit()
 
 
@@ -92,6 +130,10 @@ def get_users_list():
 
 def get_users_details(username):
     return db.session.query(User).filter(User.username == username)[0]
+
+
+def get_vendor_details(name):
+    return db.session.query(Vendor).filter(Vendor.name == name)[0]
 
 
 def delete_user(username):
