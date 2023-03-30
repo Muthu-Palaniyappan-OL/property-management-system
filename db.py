@@ -1,6 +1,4 @@
-from sqlalchemy.orm import DeclarativeBase, Session
-from sqlalchemy import create_engine, select
-from sqlalchemy.orm import mapped_column, Mapped, DeclarativeBase, Session, scoped_session, sessionmaker
+from sqlalchemy.orm import mapped_column, Mapped
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -36,23 +34,15 @@ class Property(db.Model):
 
 class Vendor(db.Model):
     __tablename__ = "vendors"
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(unique=True, nullable=False)
-    address: Mapped[str] = mapped_column(nullable=True)
+    property_name: Mapped[int] = mapped_column(primary_key=True)
+    vendor_name: Mapped[str] = mapped_column(primary_key=True, unique=True, nullable=False)
     email: Mapped[str] = mapped_column(nullable=True)
     website: Mapped[str] = mapped_column(nullable=True)
     name_contact_person: Mapped[str] = mapped_column(nullable=True)
     phone_number_of_contact: Mapped[str] = mapped_column(nullable=True)
-    vendor_type: Mapped[str] = mapped_column(nullable=True)
-    name_of_director: Mapped[str] = mapped_column(nullable=True)
-    pan_no: Mapped[str] = mapped_column(nullable=True)
-    gst: Mapped[str] = mapped_column(nullable=True)
-    msme_or_not: Mapped[str] = mapped_column(nullable=True)
-    bank_account_name: Mapped[str] = mapped_column(nullable=True)
-    bank_account_number: Mapped[str] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
-        return f"property(id={self.id},property_name={self.property_name},url={self.url})"
+        return f"property(id={self.property_name},property_name={self.vendor_name},url={self.email})"
 
 
 def initalize() -> None:
@@ -104,19 +94,21 @@ def update_or_add_properties(form_data: dict, url: str):
     db.session.commit()
 
 
-def update_or_add_vendors(form_data: dict):
-    results = db.session.query(Property).filter(
-        Property.property_name == form_data['vendor_name'])
+def update_or_add_vendors(property_name, form_data: dict):
+    print(form_data)
+    results = db.session.query(Vendor).filter(
+        Vendor.property_name == form_data['property_name'] and Vendor.name == form_data['vendor_name'])
 
-    user = None
+    vendor = None
     if results.first() is not None:
-        user = results[0]
+        vendor = results[0]
     else:
-        user = User()
+        vendor = Vendor()
 
     for key in form_data:
-        setattr(user, key, form_data[key])
-
+        setattr(vendor, key, form_data[key])
+    
+    db.session.add(vendor)
     db.session.commit()
 
 
@@ -132,12 +124,21 @@ def get_users_details(username):
     return db.session.query(User).filter(User.username == username)[0]
 
 
-def get_vendor_details(name):
-    return db.session.query(Vendor).filter(Vendor.name == name)[0]
+def get_vendor_list_details(property_name):
+    return db.session.query(Vendor).filter(Vendor.property_name == property_name)
+
+def get_vendor_details(property_name, vendor_name):
+    return db.session.query(Vendor).filter(Vendor.property_name == property_name and Vendor.vendor_name == vendor_name )[0]
 
 
 def delete_user(username):
     results = db.session.query(User).filter(User.username == username)
+    if results.first() is not None:
+        db.session.delete(results[0])
+        db.session.commit()
+
+def delete_vendor(property_name, vendor_name):
+    results = db.session.query(Vendor).filter(Vendor.property_name == property_name and Vendor.vendor_name == vendor_name)
     if results.first() is not None:
         db.session.delete(results[0])
         db.session.commit()

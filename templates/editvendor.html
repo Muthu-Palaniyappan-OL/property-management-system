@@ -6,8 +6,13 @@
             <h1 class="h3 mb-3 text-center">Add or Modify Vendor</h1>
 
             <div class="form-floating">
+                <input type="text" class="form-control" id="vendor_name" name="property_name" placeholder="VendorName"
+                    value="{{property_name or ''}}">
+                <label for="vendor_name">Property Name</label>
+            </div>
+            <div class="form-floating">
                 <input type="text" class="form-control" id="vendor_name" name="vendor_name" placeholder="VendorName"
-                    value="{{vendor.name or ''}}">
+                    value="{{vendor.vendor_name or ''}}">
                 <label for="vendor_name">Vendor Name</label>
             </div>
             <div class="form-floating">
@@ -31,27 +36,7 @@
                 <label for="phone_number_of_contact">Phone Number Of Contact</label>
             </div>
 
-            <select class="form-floating" name="category" id="category">
-                {% for category in categories %}
-                {% if property.category == category %}
-                <option selected value="{{category}}">{{category}}</option>
-                {% else %}
-                <option value="{{category}}">{{category}}</option>
-                {% endif %}
-                {% endfor%}
-            </select>
-
-            <div class="form-floating">
-                <textarea class="form-control" name="address" id="address" cols="30"
-                    placeholder="{{property.address or ''}}" rows="10"></textarea>
-                <label for="address">Address</label>
-            </div>
-
-            <div class="mb-3">
-                <input type="file" class="form-control" id="file" name="file" placeholder="File Name">
-            </div>
-
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Add or Modify Property</button>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Add or Modify Vendor</button>
         </form>
     </div>
 </div>

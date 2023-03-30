@@ -37,7 +37,7 @@ def strict_static(file_name, *args, **kwargs):
 @app.route("/property/<property_name>", endpoint='property')
 @restricted
 def property(property_name, *args, **kwargs):
-    return render_template("property.html", property=db.get_property_details(property_name), title=property_name)
+    return render_template("property.html", property=db.get_property_details(property_name), vendor_list=db.get_vendor_list_details(property_name), title=property_name)
 
 
 @app.route("/manageusers", methods=['GET', 'POST'], endpoint='manageusers')
@@ -73,19 +73,23 @@ def editproperty(property_name, *args, **kwargs):
     return render_template("editproperty.html", property=None, categories=db.categories,  title='Edit Property')
 
 
-@app.route("/editvendor/<vendor_name>", methods=['GET', 'POST'], endpoint='editvendor')
+@app.route("/editvendor/<property_name>/<vendor_name>", methods=['GET', 'POST'], endpoint='editvendor')
 @restricted
-def editvendor(vendor_name, *args, **kwargs):
+def editvendor(property_name, vendor_name, *args, **kwargs):
 
     if request.method == 'POST':
-        f = request.files['file']
-        f.save('./static/'+f.filename)
-        app.logger.info(f.filename)
-        db.update_or_add_vendors(request.form)
+        db.update_or_add_vendors(property_name, request.form)
         return redirect("/")
-    if vendor_name != "new":
-        return render_template("editvendor.html", vendor=None)
-    return render_template("editvendor.html", vendor=db.get_vendor_details(vendor_name),  title='Edit Property')
+    if vendor_name == "new":
+        return render_template("editvendor.html", property_name=property_name, vendor=None)
+    print(db.get_vendor_details(property_name, vendor_name))
+    return render_template("editvendor.html",property_name=property_name,  vendor=db.get_vendor_details(property_name, vendor_name),  title='Edit Vendors')
+
+@app.route("/deletevendor/<property_name>/<vendor_name>", methods=['DELETE'], endpoint='deletevendor')
+@restricted
+def deletevendor(property_name, vendor_name, *args, **kwargs):
+    db.delete_vendor()
+    return ""
 
 
 @app.route("/logout", endpoint='logout')

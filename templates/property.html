@@ -40,10 +40,39 @@
             </div>
             <div class="tab-pane fade" id="vendors-tab-pane" role="tabpanel" aria-labelledby="vendors-tab" tabindex="2">
                 <h3>Vendors</h3>
+                <!-- Vendors -->
+                <div class="property-card-group">
+                    {% for v in vendor_list %}
+                        <div class="card bg-dark m-2">
+                        <div class="card-body">
+                            <h5 class="card-title text-white">Vendor Name: {{v.vendor_name}}</h5>
+                            <p class="card-text text-white">Email: {{v.email}}</p>
+                            <p class="card-text text-white">Website: {{v.website}}</p>
+                            <p class="card-text text-white">Contack Person: {{v.name_contact_person}}</p>
+                            <p class="card-text text-white">Phone Number: {{v.phone_number_of_contact}}</p>
+                            <button onclick=`delete_vendor({{property_name}}, {{v.vendor_name}}})''><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                              </svg></button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="card new-property m-2">
+                    <a href="/editvendor/{{ property.property_name }}/new">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                            <path
+                                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                        </svg>
+                        <span class="mt-1 mb-5">
+                            Add New Vendor
+                        </span>
+                    </a>
+                </div>
             </div>
             <div class="tab-pane fade" id="tenants-tab-pane" role="tabpanel" aria-labelledby="tenants-tab" tabindex="3">
                 <h3>Tenants</h3>
             </div>
+        </div>
         </div>
     </div>
 </div>

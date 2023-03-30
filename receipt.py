@@ -8,19 +8,19 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from email.mime.image import MIMEImage
-from fpdf import FPDF
+# from fpdf import FPDF
 import random
 
-def generate_invoice():
-    num=random.random()
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=15)
-    pdf.cell(200, 10, txt="M4ESTATES Rent Receipt", ln=1, align='J')
-    #Add Property ID, Price and Date here
-    pdf.cell(200, 10, txt="", ln=2, align='J')
-    pdf.output(num)
-    return
+# def generate_invoice():
+#     num=random.random()
+#     pdf = FPDF()
+#     pdf.add_page()
+#     pdf.set_font("Arial", size=15)
+#     pdf.cell(200, 10, txt="M4ESTATES Rent Receipt", ln=1, align='J')
+#     #Add Property ID, Price and Date here
+#     pdf.cell(200, 10, txt="", ln=2, align='J')
+#     pdf.output(num)
+#     return
 
 # Get credentials using OAuth 2.0 flow
 def get_credentials():

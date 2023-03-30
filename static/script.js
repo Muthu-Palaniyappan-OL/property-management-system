@@ -18,3 +18,17 @@ document.querySelectorAll('.bg-danger').forEach((button) => button.addEventListe
         console.log(e)
     })
 }))
+
+function delete_vendor(property_name, vendor_name) {
+    if (string_id === "") return
+    fetch(`/deleteuser/${property_name}/${vendor_name}`, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+        method: 'delete',
+    }).then(e => {
+        console.log(e)
+    }).catch(e => {
+        console.log(e)
+    })
+}
