@@ -9,3 +9,9 @@ pip install -r requirements.txt
 ```sh
 python main.py
 ```
+
+## Email
+
+m4estates.admin@gmail.com
+name: Admin-M4Estates
+devilliers17
