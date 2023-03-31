@@ -69,12 +69,11 @@ else:
 to = 'jayenths@gmail.com'
 subject = 'M4Estates-Rent receipt'
 body = 'Hello <<<name>>>,\n\nYour rent payment of <<<price>> is successfully received\n\nThanks and regards,\nAdmin\nM4Estates'
-pdf_path = 'dummy.pdf'
+pdf_path = 'invoice.pdf'
 # generate_invoice()
 # send_email(to, subject, body, pdf_path, credentials)
 
-def send_invoice_mail(to):
+def send_invoice_mail(to, body):
     subject = 'M4Estates-Rent receipt'
-    body = 'Hello <<<name>>>,\n\nYour rent payment of <<<price>> is successfully received\n\nThanks and regards,\nAdmin\nM4Estates'
-    pdf_path = 'receipt.pdf'
+    pdf_path = 'invoice.pdf'
     send_email(to, subject, body, pdf_path, credentials)

@@ -67,7 +67,7 @@
                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
             </svg> <input type="text" class="w-100 border border-primary p-2" name="new-username" id="new-name"
                 placeholder="name">
-            <input type="text" name="new-password" class="w-100 border border-primary p-2" id="new-password"
+            <input type="password" name="new-password" class="w-100 border border-primary p-2" id="new-password"
                 placeholder="password">
             <select name="level" id="level">
                 <option value="2">View Level</option>
@@ -84,7 +84,6 @@
     </div>
 </div>
 {% else %}
-<h2 class="d-flex justify-content-center align-items-center w-100 alert-center">Your not admin, you can't manage
-    users</h2>
+<h2 class="d-flex justify-content-center align-items-center w-100 alert-center">You are not recognised as Admin, Please contact administrator</h2>
 {% endif %}
 {% endblock main %}

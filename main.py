@@ -39,7 +39,7 @@ def strict_static(file_name, *args, **kwargs):
 @restricted
 def property(property_name, *args, **kwargs):
     print(list(db.get_vendor_list()))
-    return render_template("property.html", property=db.get_property_details(property_name), vendor_list=db.get_vendor_list_details(property_name), title=property_name)
+    return render_template("property.html", property=db.get_property_details(property_name), vendor_list=db.get_vendor_list_details(property_name), tenant_list=db.get_tenants_list_details(property_name), title=property_name)
 
 
 @app.route("/manageusers", methods=['GET', 'POST'], endpoint='manageusers')
@@ -93,6 +93,24 @@ def deletevendor(property_name, vendor_name, *args, **kwargs):
     db.delete_vendor(property_name, vendor_name)
     return ""
 
+@app.route("/edittenant/<property_name>/<tenant_name>", methods=['GET', 'POST'], endpoint='edittenant')
+@restricted
+def edittenant(property_name, tenant_name, *args, **kwargs):
+
+    if request.method == 'POST':
+        db.update_or_add_tenants(property_name, request.form)
+        return redirect("/")
+    if tenant_name == "new":
+        return render_template("edittenant.html", property_name=property_name, tenant=None)
+    print(db.get_tenant_details(property_name, tenant_name))
+    return render_template("edittenant.html",property_name=property_name,  tenant=db.get_tenant_details(property_name, tenant_name),  title='Edit tenants')
+
+@app.route("/deletetenant/<property_name>/<tenant_name>", methods=['DELETE'], endpoint='deletetenant')
+@restricted
+def deletetenant(property_name, tenant_name, *args, **kwargs):
+    db.delete_tenant(property_name, tenant_name)
+    return ""
+
 
 @app.route("/logout", endpoint='logout')
 @restricted
@@ -115,11 +133,12 @@ def login(*args, **kwargs):
             return render_template("login.html", title='Login', remove_logout_icon=True, warning='Wrong Username or password')
     return render_template("login.html", title='Login', remove_logout_icon=True)
 
-@app.route("/sendinvoice/<property_name>/<vendor_name>", methods=['GET'], endpoint='sendinvoice')
+@app.route("/sendinvoice/<property_name>/<vendor_name>/<price>", methods=['GET'], endpoint='sendinvoice')
 @restricted
-def send_invoice(property_name, vendor_name, *args, **kwargs):
+def send_invoice(property_name, vendor_name, price, *args, **kwargs):
     vendor = db.get_vendor_details(property_name, vendor_name)
-    receipt.send_invoice_mail(vendor.email)
+    body = 'Hello '+vendor_name+',\n\nYour rent payment of '+price+' is successfully received\n\nThanks and regards,\nAdmin\nM4Estates'
+    receipt.send_invoice_mail(vendor.email, body)
     return ""
 
 @app.route("/news", methods=['GET'], endpoint='news')
@@ -173,4 +192,4 @@ if __name__ == "__main__":
     with app.app_context():
         db.db.create_all()
         db.initalize()
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=False)

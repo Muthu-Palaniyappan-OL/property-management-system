@@ -30,10 +30,11 @@ function delete_vendor(property_name, vendor_name) {
     }).catch(e => {
         console.log(e)
     })
+    window.location.href = `/`+window.location.href.split('/')[3]+'/'+window.location.href.split('/')[4];
 }
 
-function request_invoice(property_name, vendor_name) {
-    fetch(`/sendinvoice/${property_name}/${vendor_name}}`, {
+function request_invoice(event, property_name, vendor_name) {
+    fetch(`/sendinvoice/${property_name}/${vendor_name}}/${event.target.parentElement.parentElement.querySelector('#invoiceAmount').value}`, {
         headers: {
             "Content-Type": "application/json",
         },
@@ -44,6 +45,7 @@ function request_invoice(property_name, vendor_name) {
     }).catch(e => {
         console.log(e)
     })
+    window.location.href = `/`+window.location.href.split('/')[3]+'/'+window.location.href.split('/')[4];
 }
 
 function edit_vendor(property_name, vendor_name) {
