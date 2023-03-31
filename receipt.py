@@ -71,4 +71,10 @@ subject = 'M4Estates-Rent receipt'
 body = 'Hello <<<name>>>,\n\nYour rent payment of <<<price>> is successfully received\n\nThanks and regards,\nAdmin\nM4Estates'
 pdf_path = 'dummy.pdf'
 # generate_invoice()
-send_email(to, subject, body, pdf_path, credentials)
+# send_email(to, subject, body, pdf_path, credentials)
+
+def send_invoice_mail(to):
+    subject = 'M4Estates-Rent receipt'
+    body = 'Hello <<<name>>>,\n\nYour rent payment of <<<price>> is successfully received\n\nThanks and regards,\nAdmin\nM4Estates'
+    pdf_path = 'receipt.pdf'
+    send_email(to, subject, body, pdf_path, credentials)

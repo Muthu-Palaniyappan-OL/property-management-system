@@ -4,6 +4,7 @@ import db
 import requests
 from PIL import Image
 from io import BytesIO
+import receipt
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
@@ -37,6 +38,7 @@ def strict_static(file_name, *args, **kwargs):
 @app.route("/property/<property_name>", endpoint='property')
 @restricted
 def property(property_name, *args, **kwargs):
+    print(list(db.get_vendor_list()))
     return render_template("property.html", property=db.get_property_details(property_name), vendor_list=db.get_vendor_list_details(property_name), title=property_name)
 
 
@@ -88,7 +90,7 @@ def editvendor(property_name, vendor_name, *args, **kwargs):
 @app.route("/deletevendor/<property_name>/<vendor_name>", methods=['DELETE'], endpoint='deletevendor')
 @restricted
 def deletevendor(property_name, vendor_name, *args, **kwargs):
-    db.delete_vendor()
+    db.delete_vendor(property_name, vendor_name)
     return ""
 
 
@@ -112,6 +114,13 @@ def login(*args, **kwargs):
         else:
             return render_template("login.html", title='Login', remove_logout_icon=True, warning='Wrong Username or password')
     return render_template("login.html", title='Login', remove_logout_icon=True)
+
+@app.route("/sendinvoice/<property_name>/<vendor_name>", methods=['GET'], endpoint='sendinvoice')
+@restricted
+def send_invoice(property_name, vendor_name, *args, **kwargs):
+    vendor = db.get_vendor_details(property_name, vendor_name)
+    receipt.send_invoice_mail(vendor.email)
+    return ""
 
 @app.route("/news", methods=['GET'], endpoint='news')
 @restricted
@@ -164,4 +173,4 @@ if __name__ == "__main__":
     with app.app_context():
         db.db.create_all()
         db.initalize()
-    app.run(host="0.0.0.0", debug=False)
+    app.run(host="0.0.0.0", debug=True)

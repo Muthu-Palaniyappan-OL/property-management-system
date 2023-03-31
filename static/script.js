@@ -20,8 +20,7 @@ document.querySelectorAll('.bg-danger').forEach((button) => button.addEventListe
 }))
 
 function delete_vendor(property_name, vendor_name) {
-    if (string_id === "") return
-    fetch(`/deleteuser/${property_name}/${vendor_name}`, {
+    fetch(`/deletevendor/${property_name}/${vendor_name}`, {
         headers: {
             "Content-Type": "application/json",
         },
@@ -31,4 +30,22 @@ function delete_vendor(property_name, vendor_name) {
     }).catch(e => {
         console.log(e)
     })
+}
+
+function request_invoice(property_name, vendor_name) {
+    fetch(`/sendinvoice/${property_name}/${vendor_name}}`, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+        method: 'get',
+    }).then(e => {
+        console.log(e)
+        window.location.href = `/`;
+    }).catch(e => {
+        console.log(e)
+    })
+}
+
+function edit_vendor(property_name, vendor_name) {
+    window.location.href = `/editvendor/${property_name}/${vendor_name}`;
 }

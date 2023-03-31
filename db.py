@@ -34,15 +34,16 @@ class Property(db.Model):
 
 class Vendor(db.Model):
     __tablename__ = "vendors"
-    property_name: Mapped[int] = mapped_column(primary_key=True)
-    vendor_name: Mapped[str] = mapped_column(primary_key=True, unique=True, nullable=False)
+    id : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    property_name: Mapped[str] = mapped_column(nullable=False)
+    vendor_name: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(nullable=True)
     website: Mapped[str] = mapped_column(nullable=True)
     name_contact_person: Mapped[str] = mapped_column(nullable=True)
     phone_number_of_contact: Mapped[str] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
-        return f"property(id={self.property_name},property_name={self.vendor_name},url={self.email})"
+        return f"vendor(property_name={self.property_name},vendor_name={self.vendor_name},email={self.email})"
 
 
 def initalize() -> None:
@@ -97,7 +98,9 @@ def update_or_add_properties(form_data: dict, url: str):
 def update_or_add_vendors(property_name, form_data: dict):
     print(form_data)
     results = db.session.query(Vendor).filter(
-        Vendor.property_name == form_data['property_name'] and Vendor.name == form_data['vendor_name'])
+        Vendor.vendor_name == form_data['vendor_name'] and Vendor.property_name == property_name)
+    
+    print(results.first())
 
     vendor = None
     if results.first() is not None:
@@ -108,12 +111,16 @@ def update_or_add_vendors(property_name, form_data: dict):
     for key in form_data:
         setattr(vendor, key, form_data[key])
     
+    print(vendor)
     db.session.add(vendor)
     db.session.commit()
 
 
 def get_properties_list():
     return list(db.session.query(Property).all())
+
+def get_vendor_list():
+    return list(db.session.query(Vendor).all())
 
 
 def get_users_list():
@@ -125,7 +132,7 @@ def get_users_details(username):
 
 
 def get_vendor_list_details(property_name):
-    return db.session.query(Vendor).filter(Vendor.property_name == property_name)
+    return list(db.session.query(Vendor).filter(Vendor.property_name == property_name))
 
 def get_vendor_details(property_name, vendor_name):
     return db.session.query(Vendor).filter(Vendor.property_name == property_name and Vendor.vendor_name == vendor_name )[0]
