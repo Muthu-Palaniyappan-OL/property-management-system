@@ -1,6 +1,8 @@
 from sqlalchemy.orm import mapped_column, Mapped
 from flask_sqlalchemy import SQLAlchemy
 
+#hi 
+
 db = SQLAlchemy()
 categories = ["bunglow", "society", "under-construction",
               "induvijual-house", "appartment/flats", "office-complex"]
