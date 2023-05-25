@@ -65,10 +65,7 @@ def deleteuser(*args, **kwargs):
 def editproperty(property_name, *args, **kwargs):
 
     if request.method == 'POST':
-        print(request.form)
-        f = request.files['file']
-        f.save('./static/'+f.filename)
-        db.update_or_add_properties(request.form, '/static/'+f.filename)
+        db.update_or_add_properties(request)
         return redirect("/")
     if property_name != "new":
         return render_template("editproperty.html", property=db.get_property_details(property_name), categories=db.categories, title='Edit Property')
@@ -192,4 +189,4 @@ if __name__ == "__main__":
     with app.app_context():
         db.db.create_all()
         db.initalize()
-    app.run(host="0.0.0.0", debug=False)
+    app.run(host="0.0.0.0", debug=True)

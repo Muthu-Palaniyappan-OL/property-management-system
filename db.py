@@ -1,4 +1,5 @@
 from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy import LargeBinary, ARRAY
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -27,6 +28,9 @@ class Property(db.Model):
     no_of_units: Mapped[int] = mapped_column(nullable=True)
     list_of_units: Mapped[str] = mapped_column(nullable=True)
     address: Mapped[str] = mapped_column(nullable=True)
+    image: Mapped[bytes] = mapped_column(LargeBinary, nullable=True)
+    pancard: Mapped[bytes] = mapped_column(LargeBinary, nullable=True)
+    discription: Mapped[str] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
         return f"property(id={self.id},property_name={self.property_name},url={self.url})"
@@ -34,7 +38,7 @@ class Property(db.Model):
 
 class Vendor(db.Model):
     __tablename__ = "vendors"
-    id : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     property_name: Mapped[str] = mapped_column(nullable=False)
     vendor_name: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(nullable=True)
@@ -44,9 +48,11 @@ class Vendor(db.Model):
 
     def __repr__(self) -> str:
         return f"vendor(property_name={self.property_name},vendor_name={self.vendor_name},email={self.email})"
+
+
 class Tenants(db.Model):
     __tablename__ = "tenants"
-    id : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     property_name: Mapped[str] = mapped_column(nullable=False)
     tenant_name: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(nullable=True)
@@ -89,9 +95,9 @@ def update_or_add_users(username, password, level):
     db.session.commit()
 
 
-def update_or_add_properties(form_data: dict, url: str):
+def update_or_add_properties(req):
     results = db.session.query(Property).filter(
-        Property.property_name == form_data['property_name'])
+        Property.property_name == req.form['property_name'])
 
     user = None
     if results.first() is not None:
@@ -99,10 +105,12 @@ def update_or_add_properties(form_data: dict, url: str):
     else:
         user = Property()
 
-    for key in form_data:
-        setattr(user, key, form_data[key])
-
-    setattr(user, "url", url)
+    for key in req.form:
+        setattr(user, key, req.form[key])
+    
+    for key in req.files:
+        print(key)
+        setattr(user, key, req.files[key])
 
     db.session.add(user)
 
@@ -113,7 +121,7 @@ def update_or_add_vendors(property_name, form_data: dict):
     print(form_data)
     results = db.session.query(Vendor).filter(
         Vendor.vendor_name == form_data['vendor_name'] and Vendor.property_name == property_name)
-    
+
     print(results.first())
 
     vendor = None
@@ -124,16 +132,17 @@ def update_or_add_vendors(property_name, form_data: dict):
 
     for key in form_data:
         setattr(vendor, key, form_data[key])
-    
+
     print(vendor)
     db.session.add(vendor)
     db.session.commit()
+
 
 def update_or_add_tenants(property_name, form_data: dict):
     print(form_data)
     results = db.session.query(Tenants).filter(
         Tenants.tenant_name == form_data['tenant_name'] and Tenants.property_name == property_name)
-    
+
     print(results.first())
 
     tenants = None
@@ -144,7 +153,7 @@ def update_or_add_tenants(property_name, form_data: dict):
 
     for key in form_data:
         setattr(tenants, key, form_data[key])
-    
+
     print(tenants)
     db.session.add(tenants)
     db.session.commit()
@@ -152,6 +161,7 @@ def update_or_add_tenants(property_name, form_data: dict):
 
 def get_properties_list():
     return list(db.session.query(Property).all())
+
 
 def get_vendor_list():
     return list(db.session.query(Vendor).all())
@@ -168,14 +178,17 @@ def get_users_details(username):
 def get_vendor_list_details(property_name):
     return list(db.session.query(Vendor).filter(Vendor.property_name == property_name))
 
+
 def get_vendor_details(property_name, tenant_name):
-    return db.session.query(Vendor).filter(Vendor.property_name == property_name and Tenants.tenant_name == tenant_name )[0]
+    return db.session.query(Vendor).filter(Vendor.property_name == property_name and Tenants.tenant_name == tenant_name)[0]
+
 
 def get_tenants_list_details(property_name):
     return list(db.session.query(Tenants).filter(Tenants.property_name == property_name))
 
+
 def get_tenant_details(property_name, tenant_name):
-    return db.session.query(Tenants).filter(Tenants.property_name == property_name and Tenants.tenant_name == tenant_name )[0]
+    return db.session.query(Tenants).filter(Tenants.property_name == property_name and Tenants.tenant_name == tenant_name)[0]
 
 
 def delete_user(username):
@@ -184,14 +197,18 @@ def delete_user(username):
         db.session.delete(results[0])
         db.session.commit()
 
+
 def delete_vendor(property_name, vendor_name):
-    results = db.session.query(Vendor).filter(Vendor.property_name == property_name and Vendor.vendor_name == vendor_name)
+    results = db.session.query(Vendor).filter(
+        Vendor.property_name == property_name and Vendor.vendor_name == vendor_name)
     if results.first() is not None:
         db.session.delete(results[0])
         db.session.commit()
 
+
 def delete_tenant(property_name, tenant_name):
-    results = db.session.query(Tenants).filter(Tenants.property_name == property_name and Tenants.tenant_name == tenant_name)
+    results = db.session.query(Tenants).filter(
+        Tenants.property_name == property_name and Tenants.tenant_name == tenant_name)
     if results.first() is not None:
         db.session.delete(results[0])
         db.session.commit()
