@@ -73,6 +73,11 @@
           <p class="alert alert-primary" role="alert">
             Category: {{ property.property_name }}
           </p>
+          {% if property.predicted_rent %}
+          <p class="alert alert-primary" role="alert">
+            Predicted Rent: {{ property.predicted_rent }}
+          </p>
+          {% endif %}
           <p class="alert alert-primary" role="alert">
             Location: {{ property.location }}
           </p>

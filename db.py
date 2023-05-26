@@ -3,6 +3,17 @@ from sqlalchemy import LargeBinary, ARRAY
 from flask_sqlalchemy import SQLAlchemy
 import base64
 import matplotlib.pyplot as plt
+import spacy
+import pandas as pd
+from word2number import w2n
+import joblib
+
+nlp = spacy.load('en_core_web_md')
+model = joblib.load('elastic_net.joblib')
+
+df = pd.read_csv('rent_data.csv')
+localities = df['locality'].unique()
+cities = df['city'].unique()
 
 db = SQLAlchemy()
 categories = ["bunglow", "society", "under-construction",
@@ -33,9 +44,15 @@ class Property(db.Model):
     pancard: Mapped[str] = mapped_column(nullable=True)
     discription: Mapped[str] = mapped_column(nullable=True)
     finance: Mapped[str] = mapped_column(nullable=True)
+    locality: Mapped[str] = mapped_column(nullable=True)
+    city: Mapped[str] = mapped_column(nullable=True)
+    area: Mapped[str] = mapped_column(nullable=True)
+    bathroom: Mapped[str] = mapped_column(nullable=True)
+    bedroom: Mapped[str] = mapped_column(nullable=True)
+    predicted_rent: Mapped[str] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
-        return f"property(id={self.id},property_name={self.property_name},url={self.url})"
+        return f"property(id={self.id},property_name={self.property_name},discription={self.discription})"
 
 
 class Vendor(db.Model):
@@ -107,9 +124,6 @@ def update_or_add_properties(req):
     else:
         user = Property()
 
-    print(req.form)
-    print(req.files)
-
     for key in req.form:
         if req.form[key] != '':
             setattr(user, key, req.form[key])
@@ -117,6 +131,25 @@ def update_or_add_properties(req):
     for key in req.files:
         if req.files[key].filename:
             setattr(user, key, base64.b64encode(req.files[key].read()).decode('UTF-8'))
+    
+
+    print(user)
+
+    if (user.discription != None or user.discription == ''):
+        data = analyse(user.discription)
+        if (data['locality'] != '')[0]:
+            user.locality = data['locality'][0]
+        if (data['city'] != '')[0]:
+            user.city = data['city'][0]
+        if (data['area'] != 0)[0]:
+            user.area = data['area'][0]
+        if (data['bedroom'] != 0)[0]:
+            user.bedroom = data['bedroom'][0]
+        if (data['bathroom'] != 0)[0]:
+            user.bathroom = data['bathroom'][0]
+        print(data)
+        user.predicted_rent = int(model.predict(data)[0])
+        
 
     db.session.add(user)
 
@@ -219,6 +252,50 @@ def delete_tenant(property_name, tenant_name):
         db.session.delete(results[0])
         db.session.commit()
 
+def analyse(text):
+    seller_type = "OWNER"
+    bedroom = 0 
+    layout_type = "BHK"
+    property_type = "Apartment"
+    locality = ""
+    area = 0
+    furnish_type = "Furnished"
+    bathroom = 0
+    city = ""
+    data = pd.DataFrame({
+        'seller_type': [seller_type],
+        'bedroom': [bedroom],
+        'layout_type': [layout_type],
+        'property_type': [property_type],
+        'locality': [locality],
+        'area': [area],
+        'furnish_type': [furnish_type],
+        'bathroom': [bathroom],
+        'city': [city]
+    })
+
+    doc = nlp(text)
+    for ent in doc.ents:
+        if (ent.label_ == 'QUANTITY'):
+            if ent.text.find('sq'):
+                data['area'] = w2n.word_to_num(ent.text.split(' ')[0])
+            else:
+                data['area'] = w2n.word_to_num(ent.text)
+            
+        if (ent.label_ == 'CARDINAL'):
+            next_word = [i for i in ent.root.ancestors][0]
+            if (nlp(next_word.lemma_).similarity(nlp('bed bedroom')) > 0.8):
+                data['bedroom'] = w2n.word_to_num(ent.text)
+            if (nlp(next_word.lemma_).similarity(nlp('bath rest bathroom restroom')) > 0.8):
+                data['bathroom'] = w2n.word_to_num(ent.text)
+            if (nlp(next_word.lemma_).similarity(nlp('sq ft')) > 0.8):
+                data['area'] = w2n.word_to_num(ent.text)
+        if (ent.label_ == 'GPE'):
+            if (ent.text.lower().title() in cities):
+                data['city'] = ent.text.lower().title()
+            if (ent.text.lower().title() in localities):
+                data['locality'] = ent.text.lower().title()
+    return data
 
 if __name__ == "__main__":
     initalize()
