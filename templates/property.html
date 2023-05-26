@@ -37,20 +37,6 @@
           aria-controls="vendors-tab-pane"
           aria-selected="false"
         >
-          Vendors
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="tenants-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#tenants-tab-pane"
-          type="button"
-          role="tab"
-          aria-controls="tenants-tab-pane"
-          aria-selected="false"
-        >
           Tenants
         </button>
       </li>
@@ -148,13 +134,13 @@
         aria-labelledby="vendors-tab"
         tabindex="2"
       >
-        <h3>Vendors</h3>
+        <h3>Tenants</h3>
         <!-- Vendors -->
         <div class="property-card-group">
           {% for v in vendor_list %}
           <div class="card bg-dark m-2">
             <div class="card-body text-white">
-              Vendor Name:
+              Tenants Name:
               <h5 class="card-title text-white">{{v.vendor_name}}</h5>
               Email:
               <p class="card-text text-white">{{v.email}}</p>

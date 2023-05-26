@@ -1,43 +1,85 @@
-{% extends "layout.html" %}
-{% block main %}
+{% extends "layout.html" %} {% block main %}
 <div class="form-main property_edit_main">
-    <div class="form-signin">
-        <form action="" enctype="multipart/form-data" class="container" method="post">
-            <h1 class="h3 mb-3 text-center">Add or Modify Vendor</h1>
+  <div class="form-signin">
+    <form
+      action=""
+      enctype="multipart/form-data"
+      class="container"
+      method="post"
+    >
+      <h1 class="h3 mb-3 text-center">Add or Modify Tenant</h1>
 
-            <div class="form-floating">
-                <input type="text" class="form-control" id="vendor_name" name="property_name" placeholder="VendorName"
-                    value="{{property_name or ''}}">
-                <label for="vendor_name">Property Name</label>
-            </div>
-            <div class="form-floating">
-                <input type="text" class="form-control" id="vendor_name" name="vendor_name" placeholder="VendorName"
-                    value="{{vendor.vendor_name or ''}}">
-                <label for="vendor_name">Vendor Name</label>
-            </div>
-            <div class="form-floating">
-                <input type="email" class="form-control" id="email" name="email" placeholder="email"
-                    value="{{vendor.email or ''}}">
-                <label for="email">Email</label>
-            </div>
-            <div class="form-floating">
-                <input type="text" class="form-control" id="website" name="website" placeholder="No Of Units"
-                    value="{{vendor.website or ''}}">
-                <label for="website">Website</label>
-            </div>
-            <div class="form-floating">
-                <input type="text" class="form-control" id="name_contact_person" name="name_contact_person"
-                    placeholder="Name Contact Person" value="{{vendor.name_contact_person or ''}}">
-                <label for="name_contact_person">Name Contact Person</label>
-            </div>
-            <div class="form-floating">
-                <input type="text" class="form-control" id="phone_number_of_contact" name="phone_number_of_contact"
-                    placeholder="Phone Number Of Contact" value="{{vendor.phone_number_of_contact or ''}}">
-                <label for="phone_number_of_contact">Phone Number Of Contact</label>
-            </div>
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="vendor_name"
+          name="property_name"
+          placeholder="TenantName"
+          value="{{property_name or ''}}"
+        />
+        <label for="vendor_name">Property Name</label>
+      </div>
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="vendor_name"
+          name="vendor_name"
+          placeholder="VendorName"
+          value="{{vendor.vendor_name or ''}}"
+        />
+        <label for="vendor_name">Tenant Name</label>
+      </div>
+      <div class="form-floating">
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder="email"
+          value="{{vendor.email or ''}}"
+        />
+        <label for="email">Email</label>
+      </div>
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="website"
+          name="website"
+          placeholder="No Of Units"
+          value="{{vendor.website or ''}}"
+        />
+        <label for="website">Website</label>
+      </div>
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="name_contact_person"
+          name="name_contact_person"
+          placeholder="Name Contact Person"
+          value="{{vendor.name_contact_person or ''}}"
+        />
+        <label for="name_contact_person">Name Contact Person</label>
+      </div>
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="phone_number_of_contact"
+          name="phone_number_of_contact"
+          placeholder="Phone Number Of Contact"
+          value="{{vendor.phone_number_of_contact or ''}}"
+        />
+        <label for="phone_number_of_contact">Phone Number Of Contact</label>
+      </div>
 
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Add or Modify Vendor</button>
-        </form>
-    </div>
+      <button class="w-100 btn btn-lg btn-primary" type="submit">
+        Add or Modify Tenant
+      </button>
+    </form>
+  </div>
 </div>
 {% endblock main %}

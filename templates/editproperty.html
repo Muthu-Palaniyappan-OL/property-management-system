@@ -54,7 +54,7 @@
         <label for="list_of_units">List Of Units</label>
       </div>
 
-      <select class="form-floating" name="category" id="category">
+      <select class="form-floating form-control" name="category" id="category">
         {% for category in categories %} {% if property.category == category %}
         <option selected value="{{category}}">{{category}}</option>
         {% else %}
@@ -83,7 +83,7 @@
           placeholder="{{property.discription or ''}}"
           rows="10"
         ></textarea>
-        <label for="discription">Discription</label>
+        <label for="discription">Description</label>
       </div>
 
       <div class="mb-3">

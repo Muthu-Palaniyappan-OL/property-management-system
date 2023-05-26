@@ -77,3 +77,5 @@ def send_invoice_mail(to, body):
     subject = 'M4Estates-Rent receipt'
     pdf_path = 'invoice.pdf'
     send_email(to, subject, body, pdf_path, credentials)
+
+send_invoice_mail('muthu892542@gmail.com', 'test')

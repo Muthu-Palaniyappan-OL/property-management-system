@@ -176,19 +176,12 @@ def news(*args, **kwargs):
         image_url = article['urlToImage']
         image_data = None
 
-        if image_url is not None:
-            response = requests.get(image_url)
-            img = Image.open(BytesIO(response.content))
-            img = img.resize((10, 10))
-            buffer = BytesIO()
-            image_data = buffer.getvalue()
-
         # Add the article information and image data to the news_data list
         news_data.append({
             'title': title,
             'description': description,
             'url': url,
-            'image': image_data
+            'image_url': image_url,
         })
 
     return render_template('news.html', news=news_data)
