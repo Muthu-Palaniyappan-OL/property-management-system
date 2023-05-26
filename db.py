@@ -2,7 +2,6 @@ from sqlalchemy.orm import mapped_column, Mapped
 from sqlalchemy import LargeBinary, ARRAY
 from flask_sqlalchemy import SQLAlchemy
 import base64
-import matplotlib.pyplot as plt
 import spacy
 import pandas as pd
 from word2number import w2n

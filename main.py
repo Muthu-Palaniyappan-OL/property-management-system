@@ -6,7 +6,6 @@ from PIL import Image
 from io import BytesIO
 import receipt
 import json
-import matplotlib.pyplot as plt
 import base64
 
 app = Flask(__name__)
