@@ -1,6 +1,8 @@
 from sqlalchemy.orm import mapped_column, Mapped
 from sqlalchemy import LargeBinary, ARRAY
 from flask_sqlalchemy import SQLAlchemy
+import base64
+import matplotlib.pyplot as plt
 
 db = SQLAlchemy()
 categories = ["bunglow", "society", "under-construction",
@@ -22,15 +24,15 @@ class Property(db.Model):
     __tablename__ = "properties"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     property_name: Mapped[str] = mapped_column(unique=True, nullable=False)
-    url: Mapped[str] = mapped_column(nullable=False)
     category: Mapped[str] = mapped_column(nullable=True)
     location: Mapped[str] = mapped_column(nullable=True)
     no_of_units: Mapped[int] = mapped_column(nullable=True)
     list_of_units: Mapped[str] = mapped_column(nullable=True)
     address: Mapped[str] = mapped_column(nullable=True)
-    image: Mapped[bytes] = mapped_column(LargeBinary, nullable=True)
-    pancard: Mapped[bytes] = mapped_column(LargeBinary, nullable=True)
+    image: Mapped[str] = mapped_column(nullable=True)
+    pancard: Mapped[str] = mapped_column(nullable=True)
     discription: Mapped[str] = mapped_column(nullable=True)
+    finance: Mapped[str] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
         return f"property(id={self.id},property_name={self.property_name},url={self.url})"
@@ -105,24 +107,33 @@ def update_or_add_properties(req):
     else:
         user = Property()
 
+    print(req.form)
+    print(req.files)
+
     for key in req.form:
-        setattr(user, key, req.form[key])
+        if req.form[key] != '':
+            setattr(user, key, req.form[key])
     
     for key in req.files:
-        print(key)
-        setattr(user, key, req.files[key])
+        if req.files[key].filename:
+            setattr(user, key, base64.b64encode(req.files[key].read()).decode('UTF-8'))
 
     db.session.add(user)
 
     db.session.commit()
 
+def update_finance(property_name, data):
+    results = db.session.query(Property).filter(
+        Property.property_name == property_name)
+    property = results[0]
+    setattr(property, 'finance', data.decode('UTF-8'))
+    db.session.add(property)
+    db.session.commit()
 
 def update_or_add_vendors(property_name, form_data: dict):
-    print(form_data)
     results = db.session.query(Vendor).filter(
         Vendor.vendor_name == form_data['vendor_name'] and Vendor.property_name == property_name)
 
-    print(results.first())
 
     vendor = None
     if results.first() is not None:
@@ -133,17 +144,13 @@ def update_or_add_vendors(property_name, form_data: dict):
     for key in form_data:
         setattr(vendor, key, form_data[key])
 
-    print(vendor)
     db.session.add(vendor)
     db.session.commit()
 
 
 def update_or_add_tenants(property_name, form_data: dict):
-    print(form_data)
     results = db.session.query(Tenants).filter(
         Tenants.tenant_name == form_data['tenant_name'] and Tenants.property_name == property_name)
-
-    print(results.first())
 
     tenants = None
     if results.first() is not None:
@@ -154,7 +161,6 @@ def update_or_add_tenants(property_name, form_data: dict):
     for key in form_data:
         setattr(tenants, key, form_data[key])
 
-    print(tenants)
     db.session.add(tenants)
     db.session.commit()
 

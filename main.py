@@ -5,6 +5,9 @@ import requests
 from PIL import Image
 from io import BytesIO
 import receipt
+import json
+import matplotlib.pyplot as plt
+import base64
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
@@ -38,8 +41,14 @@ def strict_static(file_name, *args, **kwargs):
 @app.route("/property/<property_name>", endpoint='property')
 @restricted
 def property(property_name, *args, **kwargs):
-    print(list(db.get_vendor_list()))
-    return render_template("property.html", property=db.get_property_details(property_name), vendor_list=db.get_vendor_list_details(property_name), tenant_list=db.get_tenants_list_details(property_name), title=property_name)
+    property=db.get_property_details(property_name)
+    return render_template("property.html", property=property, vendor_list=db.get_vendor_list_details(property_name), tenant_list=db.get_tenants_list_details(property_name), title=property_name)
+
+@app.route("/property/<property_name>/finance", methods=['POST'], endpoint='finance')
+@restricted
+def finance(property_name, *args, **kwargs):
+    db.update_finance(property_name, request.get_data())
+    return "Done"
 
 
 @app.route("/manageusers", methods=['GET', 'POST'], endpoint='manageusers')
