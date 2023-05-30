@@ -41,11 +41,10 @@ function request_invoice(event, property_name, vendor_name) {
         method: 'get',
     }).then(e => {
         console.log(e)
-        window.location.href = `/`;
+        window.location.href = `/`+window.location.href.split('/')[3]+'/'+window.location.href.split('/')[4];
     }).catch(e => {
         console.log(e)
     })
-    window.location.href = `/`+window.location.href.split('/')[3]+'/'+window.location.href.split('/')[4];
 }
 
 function edit_vendor(property_name, vendor_name) {
